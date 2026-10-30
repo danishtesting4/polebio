@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "./lib/supabase";
+import { AuthScreen } from "./components/AuthScreen";
 import type { CSSProperties } from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
@@ -41,7 +44,7 @@ function loadDraft(): ProfileDraft {
   }
 }
 
-function App() {
+function Dashboard({ session }: { session: Session }) {
   const [draft, setDraft] = useState<ProfileDraft>(loadDraft);
   const [activeTab, setActiveTab] = useState<"overview" | "editor">("overview");
   const [savedAt, setSavedAt] = useState<string | null>(null);
@@ -124,6 +127,8 @@ function App() {
           <div className="breadcrumb">Workspace <span>/</span> {activeTab === "overview" ? "Overview" : "Profile editor"}</div>
           <div className="header-actions">
             {savedAt && <span className="saved-indicator">Saved at {savedAt}</span>}
+            <span className="account-email">{session.user.email ?? "Discord account"}</span>
+            <button className="button button-quiet" onClick={() => void supabase.auth.signOut()}>Sign out</button>
             <button className="button button-quiet" onClick={() => setActiveTab("editor")}>Edit profile <span>↗</span></button>
             <button className="button button-primary" onClick={saveDraft}>Save draft</button>
           </div>
@@ -241,6 +246,34 @@ function ProfilePreview({
       </div>
     </div>
   );
+}
+
+function App() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    let alive = true;
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!alive) return;
+      if (error) console.error("Could not restore session:", error.message);
+      setSession(data.session);
+      setCheckingSession(false);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      setCheckingSession(false);
+    });
+    return () => {
+      alive = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  if (checkingSession) {
+    return <div className="auth-loading"><span className="brand-mark">p</span><p>Opening your space...</p></div>;
+  }
+  return session ? <Dashboard session={session} /> : <AuthScreen />;
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
