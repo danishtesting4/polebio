@@ -15,26 +15,51 @@ export function AuthScreen() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setBusy(true); setError(""); setMessage("");
+    const values = new FormData(event.currentTarget);
+    const submittedEmail = String(values.get("email") ?? "").trim();
+    const submittedPassword = String(values.get("password") ?? "");
+    setEmail(submittedEmail);
+    setPassword(submittedPassword);
+    setError("");
+    setMessage("");
+
+    if (!submittedEmail) {
+      setError("Enter your email address in the email field.");
+      return;
+    }
+    if (mode !== "reset" && !submittedPassword) {
+      setError("Enter your password to continue.");
+      return;
+    }
+
+    setBusy(true);
     try {
       if (mode === "signup") {
-        const { data, error: authError } = await supabase.auth.signUp({ email, password });
+        const { data, error: authError } = await supabase.auth.signUp({
+          email: submittedEmail,
+          password: submittedPassword
+        });
         if (authError) throw authError;
         if (!data.session) setMessage("Check your inbox to confirm your email, then come back to sign in.");
         else setMessage("Your PoleBio account is ready.");
       } else if (mode === "reset") {
-        const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error: authError } = await supabase.auth.resetPasswordForEmail(submittedEmail, {
           redirectTo: window.location.origin
         });
         if (authError) throw authError;
         setMessage("If an account exists for that email, a password reset link is on its way.");
       } else {
-        const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+        const { error: authError } = await supabase.auth.signInWithPassword({
+          email: submittedEmail,
+          password: submittedPassword
+        });
         if (authError) throw authError;
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function discord() {
@@ -60,8 +85,8 @@ export function AuthScreen() {
         {mode !== "reset" && <button className="discord-button" onClick={discord} disabled={busy}><span className="discord-glyph">◉</span> Continue with Discord</button>}
         {mode !== "reset" && <div className="auth-divider"><span /> OR <span /></div>}
         <form onSubmit={submit} className="auth-form">
-          <label>Email address<input type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" /></label>
-          {mode !== "reset" && <label>Password<input type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} minLength={6} required value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters" /></label>}
+          <label>Email address<input name="email" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" /></label>
+          {mode !== "reset" && <label>Password<input name="password" type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} minLength={6} required value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters" /></label>}
           <button className="button button-primary auth-submit" type="submit" disabled={busy}>{busy ? "Please wait…" : mode === "signup" ? "Create account" : mode === "reset" ? "Send reset link" : "Sign in"}</button>
         </form>
         {error && <div className="auth-message error">{error}</div>}
