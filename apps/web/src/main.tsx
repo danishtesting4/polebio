@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./lib/supabase";
 import { AuthScreen } from "./components/AuthScreen";
@@ -22,7 +22,7 @@ const initialDraft: ProfileDraft = {
   username: "yourname",
   bio: "A little bit about me. Making things, learning things, and finding my own corner of the internet.",
   avatarUrl: "",
-  accent: "#a879f5",
+  accent: "#8b6ac8",
   links: [
     { id: 1, label: "My latest project", url: "https://example.com" },
     { id: 2, label: "Find me elsewhere", url: "https://example.com" }
@@ -151,8 +151,8 @@ function Dashboard({ session }: { session: Session }) {
             <ProfilePreview draft={draft} initials={initials} mode={previewMode} setMode={setPreviewMode} />
             <div className="publish-banner">
               <div className="publish-symbol">✦</div>
-              <div><strong>Looking good. Not quite ready to publish.</strong><p>Publishing will unlock when accounts and cloud profile storage are connected. Your draft is saved locally for now.</p></div>
-              <span className="coming-tag">COMING NEXT</span>
+              <div><strong>Looking good. Not quite ready to publish.</strong><p>Publishing will unlock when cloud profile storage is connected. Your draft is saved locally for now.</p></div>
+              <span className="coming-tag">IN PROGRESS</span>
             </div>
           </section>
         ) : (
@@ -193,7 +193,7 @@ function Dashboard({ session }: { session: Session }) {
                 <section className="panel">
                   <div className="panel-heading"><div><h2>Appearance</h2><p>A small accent can go a long way.</p></div><span className="panel-number">03</span></div>
                   <div className="color-options">
-                    {["#a879f5", "#65b7a5", "#e49a72", "#7da8ed", "#e47dba"].map((color) => (
+                    {["#8b6ac8", "#477d70", "#b87953", "#5278a7", "#ad648c"].map((color) => (
                       <button key={color} className={`color-swatch ${draft.accent === color ? "selected" : ""}`} style={{ "--swatch": color } as CSSProperties} onClick={() => update("accent", color)} aria-label={`Choose ${color} accent`} />
                     ))}
                   </div>
