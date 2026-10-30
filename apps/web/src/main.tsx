@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
 
@@ -188,7 +189,7 @@ function App() {
                   <div className="panel-heading"><div><h2>Appearance</h2><p>A small accent can go a long way.</p></div><span className="panel-number">03</span></div>
                   <div className="color-options">
                     {["#a879f5", "#65b7a5", "#e49a72", "#7da8ed", "#e47dba"].map((color) => (
-                      <button key={color} className={`color-swatch ${draft.accent === color ? "selected" : ""}`} style={{ "--swatch": color } as React.CSSProperties} onClick={() => update("accent", color)} aria-label={`Choose ${color} accent`} />
+                      <button key={color} className={`color-swatch ${draft.accent === color ? "selected" : ""}`} style={{ "--swatch": color } as CSSProperties} onClick={() => update("accent", color)} aria-label={`Choose ${color} accent`} />
                     ))}
                   </div>
                 </section>
