@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./lib/supabase";
 import { AuthScreen } from "./components/AuthScreen";
+import { BrandMark } from "./components/BrandMark";
 import type { CSSProperties } from "react";
 import ReactDOM from "react-dom/client";
 import "./styles.css";
@@ -99,7 +100,7 @@ function Dashboard({ session }: { session: Session }) {
     <div className="app-shell">
       <aside className="sidebar">
         <a className="brand" href="/" aria-label="PoleBio home">
-          <span className="brand-mark">p</span><span>polebio</span>
+          <BrandMark size={34} /><span className="brand-wordmark">Pole<span>Bio</span></span>
         </a>
         <div className="workspace-label">WORKSPACE</div>
         <button className={`nav-item ${activeTab === "overview" ? "active" : ""}`} onClick={() => setActiveTab("overview")}>
@@ -271,7 +272,7 @@ function App() {
   }, []);
 
   if (checkingSession) {
-    return <div className="auth-loading"><span className="brand-mark">p</span><p>Opening your space...</p></div>;
+    return <div className="auth-loading"><BrandMark size={42} /><p>Loading your account…</p></div>;
   }
   return session ? <Dashboard session={session} /> : <AuthScreen />;
 }
