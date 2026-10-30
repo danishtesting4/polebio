@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { supabase } from "../lib/supabase";
+import { BrandMark } from "./BrandMark";
 
 type Mode = "login" | "signup" | "reset";
 
@@ -45,33 +46,33 @@ export function AuthScreen() {
     if (result.error) { setError(result.error.message); setBusy(false); }
   }
 
-  const title = mode === "signup" ? "Make it yours." : mode === "reset" ? "Let's get you back." : "Your space awaits.";
-  const subtitle = mode === "signup" ? "Create an account and start building your corner of the internet." : mode === "reset" ? "We'll send you a link to reset your password." : "Sign in to pick up where you left off.";
+  const title = mode === "signup" ? "Create your account" : mode === "reset" ? "Reset your password" : "Sign in";
+  const subtitle = mode === "signup" ? "Set up your PoleBio account." : mode === "reset" ? "Enter your email and we'll send a reset link." : "Use your email or Discord account to continue.";
 
   return (
     <main className="auth-shell">
-      <div className="auth-glow auth-glow-one" /><div className="auth-glow auth-glow-two" />
       <section className="auth-card">
-        <a className="brand auth-brand" href="/"><span className="brand-mark">p</span><span>polebio</span></a>
-        <div className="auth-eyebrow"><span /> YOUR LITTLE CORNER OF THE INTERNET</div>
+        <a className="brand auth-brand" href="/" aria-label="PoleBio home">
+          <BrandMark size={42} />
+          <span className="brand-wordmark">Pole<span>Bio</span></span>
+        </a>
         <h1>{title}</h1><p className="auth-subtitle">{subtitle}</p>
         {mode !== "reset" && <button className="discord-button" onClick={discord} disabled={busy}><span className="discord-glyph">◉</span> Continue with Discord</button>}
-        {mode !== "reset" && <div className="auth-divider"><span /> OR WITH EMAIL <span /></div>}
+        {mode !== "reset" && <div className="auth-divider"><span /> OR <span /></div>}
         <form onSubmit={submit} className="auth-form">
           <label>Email address<input type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" /></label>
           {mode !== "reset" && <label>Password<input type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} minLength={6} required value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters" /></label>}
-          <button className="button button-primary auth-submit" type="submit" disabled={busy}>{busy ? "One sec..." : mode === "signup" ? "Create account" : mode === "reset" ? "Send reset link" : "Sign in"}</button>
+          <button className="button button-primary auth-submit" type="submit" disabled={busy}>{busy ? "Please wait…" : mode === "signup" ? "Create account" : mode === "reset" ? "Send reset link" : "Sign in"}</button>
         </form>
         {error && <div className="auth-message error">{error}</div>}
         {message && <div className="auth-message success">{message}</div>}
         <div className="auth-switch">
-          {mode === "login" && <>New around here? <button onClick={() => {setMode("signup");setError("");setMessage("");}}>Create an account</button><button className="forgot-link" onClick={() => {setMode("reset");setError("");setMessage("");}}>Forgot password?</button></>}
-          {mode === "signup" && <>Already have an account? <button onClick={() => {setMode("login");setError("");setMessage("");}}>Sign in</button></>}
-          {mode === "reset" && <button onClick={() => {setMode("login");setError("");setMessage("");}}>← Back to sign in</button>}
+          {mode === "login" && <>New to PoleBio? <button onClick={() => {setMode("signup");setError("");setMessage("");}}>Create an account</button><button className="forgot-link" onClick={() => {setMode("reset");setError("");setMessage("");}}>Forgot password?</button></>}
+          {mode === "signup" && <>Already registered? <button onClick={() => {setMode("login");setError("");setMessage("");}}>Sign in</button></>}
+          {mode === "reset" && <button onClick={() => {setMode("login");setError("");setMessage("");}}>Back to sign in</button>}
         </div>
-        <p className="auth-legal">By continuing, you're making a little home for yourself on the web.</p>
       </section>
-      <footer className="auth-footer">POLEBIO <b>✳</b> <span>Small page. Big personality.</span></footer>
+      <footer className="auth-footer">PoleBio <span>Personal profile pages</span></footer>
     </main>
   );
 }
