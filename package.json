@@ -1,0 +1,20 @@
+{
+  "name": "polebio",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A personal profile platform with custom subdomain profiles.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @polebio/web",
+    "dev:api": "npm run dev --workspace @polebio/api",
+    "build": "npm run build --workspace @polebio/shared && npm run build --workspace @polebio/api && npm run build --workspace @polebio/web",
+    "typecheck": "npm run typecheck --workspace @polebio/shared && npm run typecheck --workspace @polebio/api && npm run typecheck --workspace @polebio/web"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
