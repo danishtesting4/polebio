@@ -1,18 +1,17 @@
-const { spawnSync } = require("node:child_process");
+import { spawnSync } from "node:child_process";
 
+const npm = "/usr/local/bin/npm";
 const commands = [
-  ["npm", ["run", "build", "--workspace", "@polebio/shared"]],
-  ["npm", ["run", "build", "--workspace", "@polebio/api"]],
-  ["npm", ["run", "start", "--workspace", "@polebio/api"]]
+  ["run", "build", "--workspace", "@polebio/shared"],
+  ["run", "build", "--workspace", "@polebio/api"],
+  ["run", "start", "--workspace", "@polebio/api"]
 ];
 
-for (const [command, args] of commands) {
-  const result = spawnSync(command, args, {
-    stdio: "inherit",
-    shell: true
-  });
-
-  if (result.status !== 0) {
-    process.exit(result.status ?? 1);
+for (const args of commands) {
+  const result = spawnSync(npm, args, { stdio: "inherit" });
+  if (result.error) {
+    console.error("Could not run npm:", result.error.message);
+    process.exit(1);
   }
+  if (result.status !== 0) process.exit(result.status ?? 1);
 }
