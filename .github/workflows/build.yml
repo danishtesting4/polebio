@@ -29,6 +29,9 @@ jobs:
       - name: Typecheck workspaces
         run: npm run typecheck
 
+      - name: Run API tests
+        run: npm run test --workspace @polebio/api
+
       - name: Build all workspaces
         run: npm run build
         env:
