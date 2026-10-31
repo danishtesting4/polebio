@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: polebio-api
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install && npm run build --workspace @polebio/shared && npm run build --workspace @polebio/api
+    startCommand: npm run start --workspace @polebio/api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: SUPABASE_URL
+        value: https://hebpgoqkpsnpcukgdfph.supabase.co
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: http://localhost:5173,http://127.0.0.1:5173
