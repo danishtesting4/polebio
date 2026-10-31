@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "description": "A personal profile platform with custom subdomain profiles.",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/api",
+    "packages/shared"
   ],
   "scripts": {
     "dev": "npm run dev --workspace @polebio/web",
